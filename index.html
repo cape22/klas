@@ -1,0 +1,429 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Penilaian Kebersihan Kelas</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+        body { font-family: 'Inter', sans-serif; }
+        .glass-card {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+        }
+    </style>
+</head>
+<body class="bg-slate-100 min-h-screen text-slate-800 pb-12">
+
+    <!-- Header / Navbar -->
+    <header class="bg-indigo-600 text-white shadow-lg sticky top-0 z-30">
+        <div class="max-w-6xl mx-auto px-4 py-4 flex flex-wrap justify-between items-center gap-4">
+            <div class="flex items-center space-x-3">
+                <i class="fa-solid fa-broom text-2xl text-amber-300"></i>
+                <div>
+                    <h1 class="text-xl font-bold leading-tight">Penilaian Kebersihan Kelas</h1>
+                    <p class="text-xs text-indigo-200">Sistem Evaluasi Kebersihan & Kerapihan</p>
+                </div>
+            </div>
+            <div class="flex items-center space-x-2">
+                <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-indigo-700 text-indigo-100 border border-indigo-500">
+                    <i class="fa-solid fa-link text-emerald-400 mr-1.5 text-xs"></i> Sheets Connected
+                </span>
+                <button onclick="exportToCSV()" class="bg-emerald-500 hover:bg-emerald-600 text-white text-xs px-3 py-2 rounded-lg font-medium shadow transition flex items-center gap-1.5">
+                    <i class="fa-solid fa-file-excel"></i> Ekspor CSV
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <div class="max-w-6xl mx-auto px-4 mt-6 grid grid-cols-1 lg:grid-cols-3 gap-6">
+
+        <!-- Form Penilaian -->
+        <div class="lg:col-span-2">
+            <div class="glass-card rounded-2xl p-6 shadow-sm border border-slate-200">
+                <div class="border-b border-slate-100 pb-4 mb-5 flex justify-between items-center">
+                    <h2 class="text-lg font-bold text-slate-800 flex items-center gap-2">
+                        <i class="fa-solid fa-pen-to-square text-indigo-600"></i> Form Evaluasi
+                    </h2>
+                    <span class="text-xs text-slate-400 font-medium">*Skala Nilai 1 - 100</span>
+                </div>
+
+                <form id="evalForm" onsubmit="submitForm(event)" class="space-y-5">
+                    
+                    <!-- Informasi Utama -->
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 bg-slate-50 p-4 rounded-xl border border-slate-100">
+                        <div>
+                            <label class="block text-xs font-bold text-slate-600 uppercase mb-1">Pilih Kelas</label>
+                            <select id="kelas" required class="w-full bg-white border border-slate-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 font-semibold text-indigo-900">
+                                <option value="" disabled selected>-- Pilih Kelas --</option>
+                                <option value="11.1">Kelas 11.1</option>
+                                <option value="11.2">Kelas 11.2</option>
+                                <option value="11.3">Kelas 11.3</option>
+                                <option value="11.4">Kelas 11.4</option>
+                                <option value="11.5">Kelas 11.5</option>
+                                <option value="11.6">Kelas 11.6</option>
+                                <option value="11.7">Kelas 11.7</option>
+                                <option value="11.8">Kelas 11.8</option>
+                                <option value="11.9">Kelas 11.9</option>
+                                <option value="11.10">Kelas 11.10</option>
+                                <option value="11.11">Kelas 11.11</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block text-xs font-bold text-slate-600 uppercase mb-1">Nama Penilai / Juri</label>
+                            <input type="text" id="penilai" required placeholder="Contoh: Tim OSIS / Pak Budi" class="w-full bg-white border border-slate-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                        </div>
+                    </div>
+
+                    <!-- 7 Aspek Penilaian -->
+                    <div class="space-y-4">
+                        <h3 class="text-xs font-bold text-slate-400 uppercase tracking-wider">7 Aspek Kebersihan</h3>
+
+                        <!-- Item Aspek -->
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            
+                            <!-- 1. Papan Board -->
+                            <div class="bg-white p-3 rounded-xl border border-slate-200 shadow-sm flex items-center justify-between">
+                                <div>
+                                    <p class="text-sm font-semibold text-slate-700">Kebersihan Papan Board</p>
+                                    <p class="text-xs text-slate-400">Bebas sisa spidol/penghapus</p>
+                                </div>
+                                <input type="number" min="0" max="100" id="board" required class="aspek-input w-20 text-center font-bold text-indigo-600 bg-slate-50 border border-slate-300 rounded-lg py-1.5 focus:ring-2 focus:ring-indigo-500 focus:bg-white" placeholder="0-100">
+                            </div>
+
+                            <!-- 2. Atas Meja -->
+                            <div class="bg-white p-3 rounded-xl border border-slate-200 shadow-sm flex items-center justify-between">
+                                <div>
+                                    <p class="text-sm font-semibold text-slate-700">Kebersihan Di Atas Meja</p>
+                                    <p class="text-xs text-slate-400">Meja guru & siswa rapi</p>
+                                </div>
+                                <input type="number" min="0" max="100" id="meja" required class="aspek-input w-20 text-center font-bold text-indigo-600 bg-slate-50 border border-slate-300 rounded-lg py-1.5 focus:ring-2 focus:ring-indigo-500 focus:bg-white" placeholder="0-100">
+                            </div>
+
+                            <!-- 3. Lantai Luar Kelas -->
+                            <div class="bg-white p-3 rounded-xl border border-slate-200 shadow-sm flex items-center justify-between">
+                                <div>
+                                    <p class="text-sm font-semibold text-slate-700">Lantai Luar Kelas</p>
+                                    <p class="text-xs text-slate-400">Teras & koridor depan</p>
+                                </div>
+                                <input type="number" min="0" max="100" id="lantaiLuar" required class="aspek-input w-20 text-center font-bold text-indigo-600 bg-slate-50 border border-slate-300 rounded-lg py-1.5 focus:ring-2 focus:ring-indigo-500 focus:bg-white" placeholder="0-100">
+                            </div>
+
+                            <!-- 4. Halaman Depan Kelas -->
+                            <div class="bg-white p-3 rounded-xl border border-slate-200 shadow-sm flex items-center justify-between">
+                                <div>
+                                    <p class="text-sm font-semibold text-slate-700">Halaman Depan Kelas</p>
+                                    <p class="text-xs text-slate-400">Taman & area sekitar</p>
+                                </div>
+                                <input type="number" min="0" max="100" id="halaman" required class="aspek-input w-20 text-center font-bold text-indigo-600 bg-slate-50 border border-slate-300 rounded-lg py-1.5 focus:ring-2 focus:ring-indigo-500 focus:bg-white" placeholder="0-100">
+                            </div>
+
+                            <!-- 5. Ventilasi Kelas -->
+                            <div class="bg-white p-3 rounded-xl border border-slate-200 shadow-sm flex items-center justify-between">
+                                <div>
+                                    <p class="text-sm font-semibold text-slate-700">Ventilasi Kelas</p>
+                                    <p class="text-xs text-slate-400">Bebas debu & sarang laba-laba</p>
+                                </div>
+                                <input type="number" min="0" max="100" id="ventilasi" required class="aspek-input w-20 text-center font-bold text-indigo-600 bg-slate-50 border border-slate-300 rounded-lg py-1.5 focus:ring-2 focus:ring-indigo-500 focus:bg-white" placeholder="0-100">
+                            </div>
+
+                            <!-- 6. Kaca Kelas -->
+                            <div class="bg-white p-3 rounded-xl border border-slate-200 shadow-sm flex items-center justify-between">
+                                <div>
+                                    <p class="text-sm font-semibold text-slate-700">Kaca Kelas</p>
+                                    <p class="text-xs text-slate-400">Jendela bening & bersih</p>
+                                </div>
+                                <input type="number" min="0" max="100" id="kaca" required class="aspek-input w-20 text-center font-bold text-indigo-600 bg-slate-50 border border-slate-300 rounded-lg py-1.5 focus:ring-2 focus:ring-indigo-500 focus:bg-white" placeholder="0-100">
+                            </div>
+
+                            <!-- 7. Lantai Dalam Kelas -->
+                            <div class="bg-white p-3 rounded-xl border border-slate-200 shadow-sm flex items-center justify-between md:col-span-2">
+                                <div>
+                                    <p class="text-sm font-semibold text-slate-700">Lantai Dalam Kelas</p>
+                                    <p class="text-xs text-slate-400">Disapu, dipel, dan tidak ada sampah di kolong meja</p>
+                                </div>
+                                <input type="number" min="0" max="100" id="lantaiDalam" required class="aspek-input w-20 text-center font-bold text-indigo-600 bg-slate-50 border border-slate-300 rounded-lg py-1.5 focus:ring-2 focus:ring-indigo-500 focus:bg-white" placeholder="0-100">
+                            </div>
+
+                        </div>
+                    </div>
+
+                    <!-- Total Preview & Submit Button -->
+                    <div class="pt-4 border-t border-slate-100 flex items-center justify-between">
+                        <div>
+                            <span class="text-xs font-bold text-slate-400 uppercase block">Total Skor</span>
+                            <span id="totalScore" class="text-2xl font-black text-indigo-600">0</span>
+                            <span class="text-xs text-slate-400">/ 700</span>
+                        </div>
+                        <button type="submit" id="btnSubmit" class="bg-indigo-600 hover:bg-indigo-700 text-white font-semibold px-6 py-2.5 rounded-xl shadow-lg shadow-indigo-200 transition flex items-center gap-2">
+                            <i class="fa-solid fa-paper-plane"></i> Kirim Nilai
+                        </button>
+                    </div>
+
+                </form>
+            </div>
+        </div>
+
+        <!-- Sidebar: Leaderboard & Rekap -->
+        <div class="space-y-6">
+            
+            <!-- Podium Kebersihan -->
+            <div class="glass-card rounded-2xl p-5 shadow-sm border border-slate-200">
+                <h3 class="text-sm font-bold text-slate-800 mb-3 flex items-center gap-2">
+                    <i class="fa-solid fa-trophy text-amber-500"></i> Peringkat Kebersihan
+                </h3>
+                
+                <div id="leaderboardList" class="space-y-2">
+                    <!-- Javascript generated content -->
+                    <p class="text-xs text-slate-400 text-center py-4">Belum ada data nilai terkumpul.</p>
+                </div>
+            </div>
+
+            <!-- Riwayat Input Terakhir -->
+            <div class="glass-card rounded-2xl p-5 shadow-sm border border-slate-200">
+                <div class="flex justify-between items-center mb-3">
+                    <h3 class="text-sm font-bold text-slate-800 flex items-center gap-2">
+                        <i class="fa-solid fa-clock-rotate-left text-slate-500"></i> Riwayat Input
+                    </h3>
+                    <button onclick="clearHistory()" class="text-xs text-red-500 hover:underline">Hapus Data</button>
+                </div>
+                <div id="historyList" class="space-y-2 max-h-60 overflow-y-auto pr-1">
+                    <!-- Javascript generated content -->
+                </div>
+            </div>
+
+        </div>
+
+    </div>
+
+    <!-- Alert / Toast -->
+    <div id="toast" class="fixed bottom-5 right-5 transform translate-y-20 opacity-0 transition-all duration-300 bg-slate-900 text-white px-4 py-3 rounded-xl shadow-2xl flex items-center gap-3 z-50">
+        <i id="toastIcon" class="fa-solid fa-circle-check text-emerald-400"></i>
+        <span id="toastMsg" class="text-sm font-medium">Pesan Alert</span>
+    </div>
+
+    <script>
+        // ==========================================
+        // URL GOOGLE APPS SCRIPT LENGKAP (PATEN)
+        // ==========================================
+        const CONFIG_SCRIPT_URL = "PASTE_URL_APPS_SCRIPT_ANDA_DI_SINI";
+
+        // Global State
+        let evaluations = JSON.parse(localStorage.getItem('evaluations_data')) || [];
+
+        // Dynamic Calculation Total
+        const inputs = document.querySelectorAll('.aspek-input');
+        inputs.forEach(input => {
+            input.addEventListener('input', calculateTotal);
+        });
+
+        function calculateTotal() {
+            let total = 0;
+            inputs.forEach(input => {
+                const val = parseInt(input.value) || 0;
+                total += val;
+            });
+            document.getElementById('totalScore').innerText = total;
+        }
+
+        // Handle Submit Form
+        async function submitForm(e) {
+            e.preventDefault();
+
+            const btnSubmit = document.getElementById('btnSubmit');
+            const originalBtnContent = btnSubmit.innerHTML;
+
+            // Loading state
+            btnSubmit.disabled = true;
+            btnSubmit.innerHTML = `<i class="fa-solid fa-spinner fa-spin"></i> Menyimpan...`;
+
+            const formData = {
+                timestamp: new Date().toLocaleString("id-ID"),
+                kelas: document.getElementById('kelas').value,
+                penilai: document.getElementById('penilai').value,
+                board: parseInt(document.getElementById('board').value) || 0,
+                meja: parseInt(document.getElementById('meja').value) || 0,
+                lantaiLuar: parseInt(document.getElementById('lantaiLuar').value) || 0,
+                halaman: parseInt(document.getElementById('halaman').value) || 0,
+                ventilasi: parseInt(document.getElementById('ventilasi').value) || 0,
+                kaca: parseInt(document.getElementById('kaca').value) || 0,
+                lantaiDalam: parseInt(document.getElementById('lantaiDalam').value) || 0,
+                total: parseInt(document.getElementById('totalScore').innerText) || 0
+            };
+
+            // Save to LocalStorage
+            evaluations.unshift(formData);
+            localStorage.setItem('evaluations_data', JSON.stringify(evaluations));
+
+            // Sync with Google Sheets jika URL sudah diisi
+            if (CONFIG_SCRIPT_URL && CONFIG_SCRIPT_URL !== "https://script.google.com/macros/s/AKfycbwlfZqx2M3Q-XoxKg5kWP83qldfozXzT_hq4GHDjavv_cIfxQpb8U74Fdb5yBZR3b-UYQ/exec") {
+                try {
+                    await fetch(CONFIG_SCRIPT_URL, {
+                        method: 'POST',
+                        mode: 'no-cors',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(formData)
+                    });
+                    showToast('Nilai berhasil disimpan & terkirim ke Google Sheets!');
+                } catch (err) {
+                    showToast('Data tersimpan di browser, gagal terhubung ke Sheets.', 'error');
+                }
+            } else {
+                showToast('Nilai tersimpan! Isi URL Apps Script agar terkirim ke Sheets.');
+            }
+
+            // Reset Form & Update UI
+            document.getElementById('evalForm').reset();
+            document.getElementById('totalScore').innerText = "0";
+            btnSubmit.disabled = false;
+            btnSubmit.innerHTML = originalBtnContent;
+            
+            renderUI();
+        }
+
+        // Render Leaderboard & History
+        function renderUI() {
+            renderLeaderboard();
+            renderHistory();
+        }
+
+        function renderLeaderboard() {
+            const list = document.getElementById('leaderboardList');
+            if (evaluations.length === 0) {
+                list.innerHTML = `<p class="text-xs text-slate-400 text-center py-4">Belum ada data nilai terkumpul.</p>`;
+                return;
+            }
+
+            // Rekap nilai per kelas
+            const classScores = {};
+            evaluations.forEach(item => {
+                if (!classScores[item.kelas]) {
+                    classScores[item.kelas] = { total: 0, count: 0 };
+                }
+                classScores[item.kelas].total += item.total;
+                classScores[item.kelas].count += 1;
+            });
+
+            // Hitung rata-rata & urutkan
+            const sortedClasses = Object.keys(classScores).map(k => ({
+                kelas: k,
+                avg: Math.round(classScores[k].total / classScores[k].count)
+            })).sort((a, b) => b.avg - a.avg);
+
+            let html = '';
+            sortedClasses.forEach((item, index) => {
+                let badgeColor = 'bg-slate-100 text-slate-600';
+                let rankIcon = `<span class="text-xs font-bold w-5 h-5 flex items-center justify-center rounded-full bg-slate-200 text-slate-700">${index + 1}</span>`;
+
+                if (index === 0) {
+                    badgeColor = 'bg-amber-100 border border-amber-300 text-amber-900';
+                    rankIcon = `<i class="fa-solid fa-crown text-amber-500"></i>`;
+                } else if (index === 1) {
+                    badgeColor = 'bg-slate-200 border border-slate-300 text-slate-800';
+                    rankIcon = `<i class="fa-solid fa-medal text-slate-400"></i>`;
+                } else if (index === 2) {
+                    badgeColor = 'bg-orange-100 border border-orange-200 text-orange-900';
+                    rankIcon = `<i class="fa-solid fa-award text-amber-700"></i>`;
+                }
+
+                html += `
+                    <div class="flex items-center justify-between p-2.5 rounded-xl ${badgeColor}">
+                        <div class="flex items-center gap-2.5">
+                            ${rankIcon}
+                            <span class="text-xs font-bold">${item.kelas}</span>
+                        </div>
+                        <div class="text-right">
+                            <span class="text-xs font-extrabold">${item.avg}</span>
+                            <span class="text-[10px] text-slate-500 block">Rata-Rata</span>
+                        </div>
+                    </div>
+                `;
+            });
+
+            list.innerHTML = html;
+        }
+
+        function renderHistory() {
+            const list = document.getElementById('historyList');
+            if (evaluations.length === 0) {
+                list.innerHTML = `<p class="text-xs text-slate-400 text-center py-4">Riwayat kosong.</p>`;
+                return;
+            }
+
+            let html = '';
+            evaluations.slice(0, 10).forEach(item => {
+                html += `
+                    <div class="p-2.5 rounded-lg bg-slate-50 border border-slate-200 flex justify-between items-center text-xs">
+                        <div>
+                            <span class="font-bold text-indigo-700">${item.kelas}</span>
+                            <span class="text-slate-400 text-[10px] block">${item.timestamp}</span>
+                        </div>
+                        <div class="text-right">
+                            <span class="font-bold text-slate-700">${item.total} pts</span>
+                            <span class="text-slate-400 text-[10px] block">Oleh: ${item.penilai}</span>
+                        </div>
+                    </div>
+                `;
+            });
+
+            list.innerHTML = html;
+        }
+
+        function clearHistory() {
+            if (confirm("Apakah Anda yakin ingin menghapus seluruh riwayat lokal?")) {
+                evaluations = [];
+                localStorage.removeItem('evaluations_data');
+                renderUI();
+                showToast("Riwayat telah dibersihkan.");
+            }
+        }
+
+        // Export data to CSV
+        function exportToCSV() {
+            if (evaluations.length === 0) {
+                showToast("Tidak ada data untuk diekspor!", "error");
+                return;
+            }
+
+            let csvContent = "data:text/csv;charset=utf-8,";
+            csvContent += "Waktu,Kelas,Penilai,Papan Board,Atas Meja,Lantai Luar,Halaman,Ventilasi,Kaca,Lantai Dalam,Total Nilai\n";
+
+            evaluations.forEach(row => {
+                csvContent += `"${row.timestamp}","${row.kelas}","${row.penilai}",${row.board},${row.meja},${row.lantaiLuar},${row.halaman},${row.ventilasi},${row.kaca},${row.lantaiDalam},${row.total}\n`;
+            });
+
+            const encodedUri = encodeURI(csvContent);
+            const link = document.createElement("a");
+            link.setAttribute("href", encodedUri);
+            link.setAttribute("download", `Rekap_Kebersihan_Kelas_${new Date().toISOString().slice(0,10)}.csv`);
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        }
+
+        // Toast Alert
+        function showToast(msg, type = 'success') {
+            const toast = document.getElementById('toast');
+            const toastMsg = document.getElementById('toastMsg');
+            const toastIcon = document.getElementById('toastIcon');
+
+            toastMsg.innerText = msg;
+            if (type === 'error') {
+                toastIcon.className = "fa-solid fa-circle-exclamation text-red-400";
+            } else {
+                toastIcon.className = "fa-solid fa-circle-check text-emerald-400";
+            }
+
+            toast.classList.remove('translate-y-20', 'opacity-0');
+            setTimeout(() => {
+                toast.classList.add('translate-y-20', 'opacity-0');
+            }, 3500);
+        }
+
+        // Initial Load
+        renderUI();
+    </script>
+</body>
+</html>
